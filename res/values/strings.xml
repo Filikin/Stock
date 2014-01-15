@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, StockActivity!</string>
+    <string name="app_name">Stock</string>
+    <string name="app_package">com.imnda.stock</string>
+</resources>

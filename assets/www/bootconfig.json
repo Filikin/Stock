@@ -1,0 +1,11 @@
+{
+    "remoteAccessConsumerKey": "3MVG99qusVZJwhslpRKg1TZrzLQbdF7eOD3weX3YT7rToD5Amkt8HBTnQL8vXkaJYLHegi_idYd_Uqq.650j1",
+    "oauthRedirectURI": "imndastock:///mobilesdk/detect/oauth/done",
+    "oauthScopes": ["api"],
+    "isLocal": true,
+    "startPage": "index.html",
+    "errorPage": "error.html",
+    "shouldAuthenticate": true,
+    "attemptOfflineLoad": false,
+    "androidPushNotificationClientId": ""
+}
