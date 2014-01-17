@@ -3,6 +3,7 @@
 function regLinkClickHandlers() {
     var $j = jQuery.noConflict();
     var logToConsole = cordova.require("salesforce/util/logger").logToConsole;
+    
     $j('#link_programtag').click(function() {
                                            logToConsole("link_programtag clicked");
                                            getListOfItemTypes ();

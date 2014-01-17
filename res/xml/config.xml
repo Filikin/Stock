@@ -19,4 +19,5 @@
     <plugin name="Capture" value="org.apache.cordova.Capture"/>
     <plugin name="com.salesforce.oauth" value="com.salesforce.androidsdk.phonegap.SalesforceOAuthPlugin"/>
     <plugin name="NfcPlugin" value="com.chariotsolutions.nfc.plugin.NfcPlugin"/>
+    <plugin name="Toasty" value="com.chariotsolutions.toast.plugin.ToastPlugin"/>
 </plugins>

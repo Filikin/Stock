@@ -19,8 +19,10 @@
     <script src="forcetk.mobilesdk.js"></script>
     
     <script src="phonegap-nfc-0.4.1.js"></script>
+    <script src="phonegap-toast.js"></script> 
     <script src="NFC.js"></script>
 
+  	<script src="util.js"></script>
     <!-- log window styling -->
     <style>
       .logWindow {display:none; width:700px;}
@@ -75,8 +77,8 @@
         //enable buttons
         regLinkClickHandlers();
         
-        //Use the NFC Plugin to configure the NFC Tag Reader Listener
-	    nfc.addNdefListener(onNfcRead, successNFCRegisterListener, errorNFCRegisterListener);
+        //Use the NFC Plugin to configure the NFC Tag handler Listener
+	    nfc.addNdefListener(onNfcTagDetected, successNFCRegisterListener, errorNFCRegisterListener);
     }
       
     function salesforceSessionRefreshed(creds) {
@@ -104,6 +106,12 @@
 	<!-- load our app-specific code -->
     <script src="inline.js"></script>       
 
+	<style>
+		p.hidden
+		{
+			visibility:hidden;
+		}
+	</style>
   </head>
   <body>
       <div data-role="page" data-theme="b" id="jqm-home"> 
@@ -133,27 +141,38 @@
           <div  data-role="header"> 
               <h1>Tag Content</h1> 
           </div> 
+         <div data-role="content" id="div_tag_details">
+         	<p id="contents"></p>
+	          <p class="hidden">ID: <b id="sfid"></b></p>
+	          <p>Serial number: <b id="serialnumber"></b></p>
+	          <p id="description"></p>
+	     </div>
       </div>
 
     <div data-role="page" data-theme="a" id="itemTypes"> 
           <div  data-role="header"> 
               <h1>Item Types</h1> 
-              <div data-role="content" id="div_stock_item_types"></div>
-          </div> 
+          </div>
+          <div data-role="content" id="div_stock_item_types"></div>
       </div>
 
      <div data-role="page" data-theme="a" id="itemInstances"> 
           <div  data-role="header"> 
               <h1>Item Instances</h1> 
+          </div>
               <div data-role="content" id="div_stock_item_instances"></div>
-          </div> 
       </div>
 
      <div data-role="page" data-theme="b" id="itemDetails"> 
           <div  data-role="header"> 
               <h1>Item Details</h1> 
-              <div data-role="content" id="div_stock_item_details"></div>
-          </div> 
+          </div>
+          <div data-role="content" id="div_stock_item_details">
+	          <p class="hidden">ID: <b id="sfid"></b></p>
+	          <p>Serial number: <b id="serialnumber"></b></p>
+	          <p id="description"></p>
+	          <p id="status">Tap an NFC tag to write data.</p>
+          </div>
       </div>
   </body>
 </html>
