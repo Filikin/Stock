@@ -19,6 +19,7 @@
     <script src="forcetk.mobilesdk.js"></script>
     
     <script src="phonegap-nfc-0.4.1.js"></script>
+    <script src="NFC.js"></script>
 
     <!-- log window styling -->
     <style>
@@ -78,24 +79,6 @@
 	    nfc.addNdefListener(onNfcRead, successNFCRegisterListener, errorNFCRegisterListener);
     }
       
-    function successNFCRegisterListener(response)
-    {
-    	logToConsole('NFC: Success Registered');
-    }
-    
-    function errorNFCRegisterListener(response)
-    {
-    	logToConsole('NFC: Error Registered');
-    }
-        
-	function onNfcRead(nfcEvent) 
-	{
-   		logToConsole(JSON.stringify(nfcEvent.tag)); // Debug Output in Console
- 
-    	navigator.notification.vibrate(100);
-    
-	}
-
     function salesforceSessionRefreshed(creds) {
         logToConsole("salesforceSessionRefreshed");
         
@@ -131,7 +114,7 @@
           <div id="#content" data-role="content"> 
 
               <p><a href="#" id="link_stockcheck" data-role="button" data-inline="true">Stock Check</a></p>
-              <p><a href="#" id="link_programtag" data-role="button" data-inline="true">Program Tag</a></p>
+              <p><a href="#itemTypes" id="link_programtag" data-role="button" data-inline="true">Program Tag</a></p>
               <p><a href="#" id="link_reset" data-role="button" data-inline="true">Reset</a></p>
               <p><a href="#" id="link_logout" data-role="button" data-inline="true">Logout</a></p>
 
@@ -145,5 +128,32 @@
           </div> 
 
       </div> 
+      
+      <div data-role="page" data-theme="b" id="tagContent"> 
+          <div  data-role="header"> 
+              <h1>Tag Content</h1> 
+          </div> 
+      </div>
+
+    <div data-role="page" data-theme="a" id="itemTypes"> 
+          <div  data-role="header"> 
+              <h1>Item Types</h1> 
+              <div data-role="content" id="div_stock_item_types"></div>
+          </div> 
+      </div>
+
+     <div data-role="page" data-theme="a" id="itemInstances"> 
+          <div  data-role="header"> 
+              <h1>Item Instances</h1> 
+              <div data-role="content" id="div_stock_item_instances"></div>
+          </div> 
+      </div>
+
+     <div data-role="page" data-theme="b" id="itemDetails"> 
+          <div  data-role="header"> 
+              <h1>Item Details</h1> 
+              <div data-role="content" id="div_stock_item_details"></div>
+          </div> 
+      </div>
   </body>
 </html>
