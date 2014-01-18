@@ -64,24 +64,24 @@ public final class R {
 		public static final int sf__title_text_width = 0x7f08001b;
 	}
 	public static final class drawable {
-		public static final int sf__edit_icon = 0x7f020000;
-		public static final int sf__header_bg = 0x7f020001;
-		public static final int sf__header_drop_shadow = 0x7f020002;
-		public static final int sf__header_left_border = 0x7f020003;
-		public static final int sf__header_refresh = 0x7f020004;
-		public static final int sf__header_refresh_press = 0x7f020005;
-		public static final int sf__header_refresh_states = 0x7f020006;
-		public static final int sf__header_right_border = 0x7f020007;
-		public static final int sf__highlight_glare = 0x7f020008;
-		public static final int sf__ic_refresh_sync_anim0 = 0x7f020009;
-		public static final int sf__icon = 0x7f02000a;
-		public static final int sf__login_content_header = 0x7f02000b;
-		public static final int sf__nav_shadow = 0x7f02000c;
-		public static final int sf__oauth_background = 0x7f02000d;
-		public static final int sf__oauth_container_dropshadow = 0x7f02000e;
-		public static final int sf__progress_spinner = 0x7f02000f;
-		public static final int sf__refresh_loader = 0x7f020010;
-		public static final int sf__toolbar_background = 0x7f020011;
+		public static final int sf__edit_icon = 0x7f020001;
+		public static final int sf__header_bg = 0x7f020002;
+		public static final int sf__header_drop_shadow = 0x7f020003;
+		public static final int sf__header_left_border = 0x7f020004;
+		public static final int sf__header_refresh = 0x7f020005;
+		public static final int sf__header_refresh_press = 0x7f020006;
+		public static final int sf__header_refresh_states = 0x7f020007;
+		public static final int sf__header_right_border = 0x7f020008;
+		public static final int sf__highlight_glare = 0x7f020009;
+		public static final int sf__ic_refresh_sync_anim0 = 0x7f02000a;
+		public static final int sf__icon = 0x7f02000b;
+		public static final int sf__login_content_header = 0x7f02000c;
+		public static final int sf__nav_shadow = 0x7f02000d;
+		public static final int sf__oauth_background = 0x7f02000e;
+		public static final int sf__oauth_container_dropshadow = 0x7f02000f;
+		public static final int sf__progress_spinner = 0x7f020010;
+		public static final int sf__refresh_loader = 0x7f020011;
+		public static final int sf__toolbar_background = 0x7f020012;
 	}
 	public static final class id {
 		public static final int manage_space_layout = 0x7f0b0010;

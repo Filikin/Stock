@@ -72,19 +72,26 @@ function writeTag(nfcEvent)
 
 function updateSalesforceStatus (sfid, tagStatus)
 {
+	// tagStatus - true = written, false = read
     var updateStockItem = {}; 
-    if (tagStatus)
-    {
-    	updateStockItem['Tag_status__c'] = 'Programmed';
-     	if(Util.checkConnection()) 
-    	{
+   	if(Util.checkConnection()) 
+   	{
+   		if (tagStatus)
+   		{
+   			updateStockItem['Tag_status__c'] = 'Programmed';
 		   	forcetkClient.update("Stock_Item__c", sfid, updateStockItem, function(){toast.showShort("Status saved")},onSaveError);
     	}
-     	else
-     	{
-     		toast.showShort("No connection to Salesforce, cannot update status");
-     	}
-    }
+   		else
+   		{
+   			updateStockItem['Activity_Type__c'] = 'Tag Scanned';
+   			updateStockItem['Stock_Item__c'] = sfid;
+		   	forcetkClient.create("Stock_Item_Log__c", updateStockItem, function(){toast.showShort("Status saved")},onSaveError);
+   		}
+   	}
+   	else
+   	{
+   		toast.showShort("No connection to Salesforce, cannot update status");
+   	}
 }
 
 function getListOfItems (eqType, eqsubType)
@@ -284,6 +291,8 @@ function onSuccessOneStockItem (response)
     	var stockItem = response.records[0];
     	$j("#tagContent #description").html (stockItem.Current_description__c);
     	$j("#tagContent #serialnumber").html (stockItem.Product_Serial_Number__c);
+    	
+    	updateSalesforceStatus (stockItem.Id, false);
     }
 }
 

@@ -21,7 +21,7 @@
 
     <application android:label="@string/app_name" 
         android:name=".StockApp"
-        android:manageSpaceActivity="com.salesforce.androidsdk.ui.ManageSpaceActivity">
+        android:manageSpaceActivity="com.salesforce.androidsdk.ui.ManageSpaceActivity" android:icon="@drawable/ic_launcher">
         
         <!--  Main activity -->
         <activity android:label="@string/app_name"
