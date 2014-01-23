@@ -120,19 +120,16 @@
           </div> 
 
           <div id="#content" data-role="content"> 
-
-              <p><a href="#" id="link_stockcheck" data-role="button" data-inline="true">Stock Check</a></p>
+			<p>Welcome to the IMNDA Stock App</p>
+			<p>To program a tag, click on "Program Tag" and follow the menus until you get to the stock item</p>
+			<p>To read a tag, touch it to the back of your phone</p>
               <p><a href="#itemTypes" id="link_programtag" data-role="button" data-inline="true">Program Tag</a></p>
-              <p><a href="#" id="link_reset" data-role="button" data-inline="true">Reset</a></p>
               <p><a href="#" id="link_logout" data-role="button" data-inline="true">Logout</a></p>
 
               <div id="div_device_contact_list"></div>
               <div id="div_sfdc_contact_list"></div>
               <div id="div_sfdc_account_list"></div>
 
-              <h3>console:</h3>
-              <p id="console" class="logWindow">
-              </p>
           </div> 
 
       </div> 
@@ -144,7 +141,9 @@
          <div data-role="content" id="div_tag_details">
          	<p id="contents"></p>
 	          <p class="hidden">ID: <b id="sfid"></b></p>
+	          <p>Patient: <b id="currentpatient"></b></p>
 	          <p>Serial number: <b id="serialnumber"></b></p>
+	          <p>Status: <b id="stockstatus"></b></p>
 	          <p id="description"></p>
 	     </div>
       </div>
@@ -169,7 +168,9 @@
           </div>
           <div data-role="content" id="div_stock_item_details">
 	          <p class="hidden">ID: <b id="sfid"></b></p>
+	          <p>Patient: <b id="currentpatient"></b></p>
 	          <p>Serial number: <b id="serialnumber"></b></p>
+	          <p>Status: <b id="stockstatus"></b></p>
 	          <p id="description"></p>
 	          <p id="status">Tap an NFC tag to write data.</p>
           </div>

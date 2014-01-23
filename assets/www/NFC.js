@@ -41,6 +41,8 @@ function displayTagContent(NFCtag)
 	$j("#tagContent #sfid").html (sfid);
 	$j("#tagContent #description").html ("");
 	$j("#tagContent #serialnumber").html ("");
+	$j("#tagContent #currentpatient").html ("");
+	$j("#tagContent #stockstatus").html ("");
     getOneStockItem (sfid);
 }
 
@@ -96,7 +98,7 @@ function updateSalesforceStatus (sfid, tagStatus)
 
 function getListOfItems (eqType, eqsubType)
 {
-    forcetkClient.query("SELECT Id, Current_description__c, Tag_status__c, Name, Stock_Item_Identifier__c, Equipment_Sub_Category__c, Equipment_Type__r.Equipment_Type__c, Product_Serial_Number__c FROM Stock_Item__c where Equipment_Type__r.Equipment_Type__c = '" + eqType + "' and Equipment_Sub_Category__c = '" + eqsubType + "' and Tag_status__c = 'Not programmed'", onSuccessStockItemInstances, onErrorStockItems); 
+    forcetkClient.query("SELECT Id, Current_Patient__c, Status__c, Current_description__c, Tag_status__c, Name, Stock_Item_Identifier__c, Equipment_Sub_Category__c, Equipment_Type__r.Equipment_Type__c, Product_Serial_Number__c FROM Stock_Item__c where Equipment_Type__r.Equipment_Type__c = '" + eqType + "' and Equipment_Sub_Category__c = '" + eqsubType + "' and Tag_status__c = 'Not programmed'", onSuccessStockItemInstances, onErrorStockItems); 
 }
 
 function getListOfItemTypes ()
@@ -108,7 +110,7 @@ function getOneStockItem (sfid)
 {
 	if(Util.checkConnection())
 	{
-		forcetkClient.query("SELECT Id, Current_description__c, Name, Stock_Item_Identifier__c, Equipment_Sub_Category__c, Equipment_Type__r.Equipment_Type__c, Product_Serial_Number__c FROM Stock_Item__c where Id = '" + sfid + "'", onSuccessOneStockItem, onErrorStockItems); 
+		forcetkClient.query("SELECT Id, Current_Patient__c, Status__c, Current_description__c, Name, Stock_Item_Identifier__c, Equipment_Sub_Category__c, Equipment_Type__r.Equipment_Type__c, Product_Serial_Number__c FROM Stock_Item__c where Id = '" + sfid + "'", onSuccessOneStockItem, onErrorStockItems); 
 	}
 	else
 	{
@@ -245,6 +247,8 @@ function showItemDetails (urlObj, options)
 			$j("#itemDetails #sfid").html (currentItems[i].Id);
 			$j("#itemDetails #serialnumber").html (currentItems[i].Product_Serial_Number__c);
 			$j("#itemDetails #description").html (currentItems[i].Current_description__c);
+			$j("#itemDetails #currentpatient").html (currentItems[i].Current_Patient__c);
+			$j("#itemDetails #stockstatus").html (currentItems[i].Status__c);
 			
 			$j("#itemDetails #status").html("Tap an NFC tag to write data.");
 			bWaitingToWriteNFCTag = true;
@@ -291,6 +295,8 @@ function onSuccessOneStockItem (response)
     	var stockItem = response.records[0];
     	$j("#tagContent #description").html (stockItem.Current_description__c);
     	$j("#tagContent #serialnumber").html (stockItem.Product_Serial_Number__c);
+		$j("#tagContent #currentpatient").html (stockItem.Current_Patient__c);
+		$j("#tagContent #stockstatus").html (stockItem.Status__c);
     	
     	updateSalesforceStatus (stockItem.Id, false);
     }
@@ -301,32 +307,39 @@ function onSuccessStockItemTypes(response)
     var $j = jQuery.noConflict();
     logToConsole("onSuccessStockItemTypes: received " + response.totalSize + " items");
  
-    preparePageChangeItemType();
-    
-    $j("#div_stock_item_types").html("")
-    var ul = $j('<ul data-role="listview"></ul>');
-    $j("#div_stock_item_types").append(ul);
-    
-    var equipmentTypeMap = {};
-    var subcategoryMap = {};
-    $j.each(response.records, function(i, stockItem) {
-    	equipmentTypeMap [stockItem.Equipment_Type__r.Equipment_Type__c] = stockItem.Equipment_Type__r.Equipment_Type__c;
-    	subcategoryMap [stockItem.Equipment_Sub_Category__c] = stockItem.Equipment_Type__r.Equipment_Type__c;
-    	});
-    
-    var count=1;
-    for (var e in equipmentTypeMap)
+    if (response.totalSize > 0)
     {
-    	var newLi = "<li>" + e;
-   		newLi += "<ul data-role='listview'>"
-   		for (var sube in subcategoryMap)
-    	{
-    		if (subcategoryMap[sube] == e) newLi += "<li><a href='#itemInstances?type="+e+"&sub="+sube+"'>" + sube + "</a></li>";
-    	}
-   		newLi += "</ul>";
-    	ul.append(newLi);
-    };
-    logToConsole ($j("#div_stock_item_types").html());
+	    preparePageChangeItemType();
+	    
+	    $j("#div_stock_item_types").html("");
+	    var ul = $j('<ul data-role="listview"></ul>');
+	    $j("#div_stock_item_types").append(ul);
+	    
+	    var equipmentTypeMap = {};
+	    var subcategoryMap = {};
+	    $j.each(response.records, function(i, stockItem) {
+	    	equipmentTypeMap [stockItem.Equipment_Type__r.Equipment_Type__c] = stockItem.Equipment_Type__r.Equipment_Type__c;
+	    	subcategoryMap [stockItem.Equipment_Sub_Category__c] = stockItem.Equipment_Type__r.Equipment_Type__c;
+	    	});
+	    
+	    var count=1;
+	    for (var e in equipmentTypeMap)
+	    {
+	    	var newLi = "<li>" + e;
+	   		newLi += "<ul data-role='listview'>"
+	   		for (var sube in subcategoryMap)
+	    	{
+	    		if (subcategoryMap[sube] == e) newLi += "<li><a href='#itemInstances?type="+e+"&sub="+sube+"'>" + sube + "</a></li>";
+	    	}
+	   		newLi += "</ul>";
+	    	ul.append(newLi);
+	    };
+	    logToConsole ($j("#div_stock_item_types").html());
+    }
+    else
+    {
+    	$j("#div_stock_item_types").html("<p>No unprogrammed stock items</p>");
+    }
     
     $j("#div_stock_item_types").trigger( "create" );
 }
