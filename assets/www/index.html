@@ -56,6 +56,9 @@
 	
     var forcetkClient;
     var debugMode = true;
+    var NFCModeEnum = Object.freeze({readMode:{}, programMode:{}, stockCheckMode:{}, deliveryMode:{}}); // using as an enum
+    var NFCMode = NFCModeEnum.readMode;
+ 
     var logToConsole = cordova.require("salesforce/util/logger").logToConsole;
 
     jQuery(document).ready(function() {
@@ -65,9 +68,17 @@
 
     });
 
+	jQuery(document).on('pageinit','#jqm-home',function(){
+    	setTimeout(function(){
+		var $j = jQuery.noConflict();
+        $j.mobile.changePage("#jqm-home2", "fade");
+    	}, 1500);
+	});
+
     // When this function is called, Cordova has been initialized and is ready to roll 
     function onDeviceReady() {
         logToConsole("onDeviceReady: Cordova ready");
+		
 		//Call getAuthCredentials to get the initial session credentials
         cordova.require("salesforce/plugin/oauth").getAuthCredentials(salesforceSessionRefreshed, getAuthCredentialsError);
 
@@ -114,7 +125,13 @@
 	</style>
   </head>
   <body>
-      <div data-role="page" data-theme="b" id="jqm-home"> 
+     <div data-role="page" data-theme="b" id="jqm-home"> 
+       <div class="splash">
+            <img src="images/splash.png" alt="startup image" />
+        </div>
+      </div>
+       
+      <div data-role="page" data-theme="b" id="jqm-home2"> 
           <div  data-role="header"> 
               <h1>IMDNA Stock</h1> 
           </div> 
@@ -124,6 +141,8 @@
 			<p>To program a tag, click on "Program Tag" and follow the menus until you get to the stock item</p>
 			<p>To read a tag, touch it to the back of your phone</p>
               <p><a href="#itemTypes" id="link_programtag" data-role="button" data-inline="true">Program Tag</a></p>
+              <p><a href="#" id="link_stockcheck" data-role="button" data-inline="true">Stock Check</a></p>
+              <p><a href="#" id="link_delivery" data-role="button" data-inline="true">Delivery</a></p>
               <p><a href="#" id="link_logout" data-role="button" data-inline="true">Logout</a></p>
 
               <div id="div_device_contact_list"></div>

@@ -1,5 +1,4 @@
 var currentItems;
-var bWaitingToWriteNFCTag = false;
 var toast = cordova.require('toast');
 
 function successNFCRegisterListener(response)
@@ -14,7 +13,7 @@ function errorNFCRegisterListener(response)
    
 function onNfcTagDetected (nfcEvent)
 {
-	if (bWaitingToWriteNFCTag) writeTag(nfcEvent);
+	if (NFCMode === NFCModeEnum.programMode) writeTag(nfcEvent);
 	else onNfcRead(nfcEvent);
 }
 
@@ -63,7 +62,7 @@ function writeTag(nfcEvent)
 	        function () {
 	        	$j("#itemDetails #status").html("Tag written");
 	            navigator.notification.vibrate(100);
-				bWaitingToWriteNFCTag = false;
+	            NFCMode = NFCModeEnum.readMode;
 				updateSalesforceStatus ($j("#itemDetails #sfid").html(), true);
 	        }, 
 	        function (reason) {
@@ -128,7 +127,7 @@ function preparePageChangeItemType ()
     	
  		if ( typeof data.toPage === "string" ) {
 
-	 		bWaitingToWriteNFCTag = false;
+ 			NFCMode = NFCModeEnum.readMode;
 	    	logToConsole ("NFC: in pagebeforechange resetting write tag");
  			// We are being asked to load a page by URL, but we only
  			// want to handle URLs that request the data for a specific
@@ -251,7 +250,7 @@ function showItemDetails (urlObj, options)
 			$j("#itemDetails #stockstatus").html (currentItems[i].Status__c);
 			
 			$j("#itemDetails #status").html("Tap an NFC tag to write data.");
-			bWaitingToWriteNFCTag = true;
+			NFCMode = NFCModeEnum.programMode;
 			break;
 		}
 	}
