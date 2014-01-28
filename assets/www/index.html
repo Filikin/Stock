@@ -56,8 +56,15 @@
 	
     var forcetkClient;
     var debugMode = true;
-    var NFCModeEnum = Object.freeze({readMode:{}, programMode:{}, stockCheckMode:{}, deliveryMode:{}}); // using as an enum
+    var NFCModeEnum = Object.freeze({
+    	readMode:{Hint:"Tap an NFC tag to read it", Activity:"Tag Scanned"}, 
+    	programMode:{Hint:"Tap an NFC tag to write data", Activity:"Tag Programmed"}, 
+    	stockCheckMode:{Hint:"Tap an NFC tag to confirm it is in stock", Activity:"Stocktake"}, 
+    	deliveryMode:{Hint:"Tap an NFC tag to confirm delivery", Activity:"Delivery"}, 
+    	collectionMode:{Hint:"Tap an NFC tag to confirm collection", Activity:"Collection"}});
+    	
     var NFCMode = NFCModeEnum.readMode;
+    var splashShown = false;
  
     var logToConsole = cordova.require("salesforce/util/logger").logToConsole;
 
@@ -68,12 +75,27 @@
 
     });
 
-	jQuery(document).on('pageinit','#jqm-home',function(){
-    	setTimeout(function(){
-		var $j = jQuery.noConflict();
-        $j.mobile.changePage("#jqm-home2", "fade");
-    	}, 1500);
+	jQuery(document).on('pageshow','#jqm-home',function(){
+	logToConsole ("on PageInit splashShown: " + splashShown);
+		if (splashShown == true)
+		{
+			var $j = jQuery.noConflict();
+	        $j.mobile.changePage("#jqm-home2");
+		}
+		else
+		{
+			splashShown = true;
+	    	setTimeout(function(){
+				var $j = jQuery.noConflict();
+        		$j.mobile.changePage("#jqm-home2", "fade");
+    		}, 1500);
+    	}
 	});
+
+	jQuery(document).on('pageshow','#jqm-home2',function(){
+		var $j = jQuery.noConflict();
+ 		$j("#jqm-home2 #status").html(NFCMode.Hint);
+ 	});
 
     // When this function is called, Cordova has been initialized and is ready to roll 
     function onDeviceReady() {
@@ -138,36 +160,18 @@
 
           <div id="#content" data-role="content"> 
 			<p>Welcome to the IMNDA Stock App</p>
-			<p>To program a tag, click on "Program Tag" and follow the menus until you get to the stock item</p>
-			<p>To read a tag, touch it to the back of your phone</p>
+			<p id="status">Tap an NFC tag to read it</p>
               <p><a href="#itemTypes" id="link_programtag" data-role="button" data-inline="true">Program Tag</a></p>
-              <p><a href="#" id="link_stockcheck" data-role="button" data-inline="true">Stock Check</a></p>
-              <p><a href="#" id="link_delivery" data-role="button" data-inline="true">Delivery</a></p>
+              <p><a href="#itemDetails" id="link_stockcheck" data-role="button" data-inline="true">Stock Check</a></p>
+              <p><a href="#itemDetails" id="link_delivery" data-role="button" data-inline="true">Delivery</a></p>
+              <p><a href="#itemDetails" id="link_collection" data-role="button" data-inline="true">Collection</a></p>
               <p><a href="#" id="link_logout" data-role="button" data-inline="true">Logout</a></p>
-
-              <div id="div_device_contact_list"></div>
-              <div id="div_sfdc_contact_list"></div>
-              <div id="div_sfdc_account_list"></div>
-
+			<p>To program a tag, click on "Program Tag" and follow the menus until you get to the stock item</p>
           </div> 
 
       </div> 
       
-      <div data-role="page" data-theme="b" id="tagContent"> 
-          <div  data-role="header"> 
-              <h1>Tag Content</h1> 
-          </div> 
-         <div data-role="content" id="div_tag_details">
-         	<p id="contents"></p>
-	          <p class="hidden">ID: <b id="sfid"></b></p>
-	          <p>Patient: <b id="currentpatient"></b></p>
-	          <p>Serial number: <b id="serialnumber"></b></p>
-	          <p>Status: <b id="stockstatus"></b></p>
-	          <p id="description"></p>
-	     </div>
-      </div>
-
-    <div data-role="page" data-theme="a" id="itemTypes"> 
+     <div data-role="page" data-theme="a" id="itemTypes"> 
           <div  data-role="header"> 
               <h1>Item Types</h1> 
           </div>
@@ -186,12 +190,13 @@
               <h1>Item Details</h1> 
           </div>
           <div data-role="content" id="div_stock_item_details">
-	          <p class="hidden">ID: <b id="sfid"></b></p>
+	          <p>Identifier: <b id="stkidentifier"></b></p>
 	          <p>Patient: <b id="currentpatient"></b></p>
 	          <p>Serial number: <b id="serialnumber"></b></p>
 	          <p>Status: <b id="stockstatus"></b></p>
 	          <p id="description"></p>
-	          <p id="status">Tap an NFC tag to write data.</p>
+	          <b><p id="status">Tap an NFC tag to write data.</p></b>
+	          <p class="hidden">ID: <b id="sfid"></b></p>
           </div>
       </div>
   </body>

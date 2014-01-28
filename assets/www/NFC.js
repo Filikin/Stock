@@ -24,35 +24,55 @@ function onNfcRead(nfcEvent)
    	displayTagContent (nfcEvent.tag);
 }
 
+function resetItemDetailsPage ()
+{
+    var $j = jQuery.noConflict();
+	$j("#itemDetails h1").html ("Scan Tag");
+	$j("#itemDetails #sfid").html ("");
+	$j("#itemDetails #stkidentifier").html ("");
+	$j("#itemDetails #description").html ("");
+	$j("#itemDetails #serialnumber").html ("");
+	$j("#itemDetails #currentpatient").html ("");
+	$j("#itemDetails #stockstatus").html ("");
+
+	$j("#itemDetails #status").html (NFCMode.Hint);
+}
+
+// tag content will look like: SFId:a0ob0000000USHiStkRef:StockITEM--06000StkId:Some identifier with loads of text 
 function displayTagContent(NFCtag) 
 {
+	toast.showShort("Reading Tag");
 	logToConsole ('NFC: In displayTagContent');
     var $j = jQuery.noConflict();
     var payload = nfc.bytesToString(NFCtag.ndefMessage[0].payload);
     logToConsole ('NFC: Payload: ' + payload);
-    $j.mobile.changePage ("#tagContent");
+    $j.mobile.changePage ("#itemDetails");
     
-    var sfid = payload.replace( /.*SFId: /, "" );
-	sfid = sfid.replace (/ StockID:.*$/, "");
+    var sfid = payload.replace( /.*SFId:/, "" );
+	sfid = sfid.replace (/StkRef:.*$/, "");
+	
+	var stockRef = payload.replace (/.*StkRef:/, "");
+	stockRef = stockRef.replace (/StkId:.*$/, "");
 
-	var stockID = payload.replace (/.*StockID: /, "");
-	$j("#tagContent h1").html (stockID);
-	$j("#tagContent #sfid").html (sfid);
-	$j("#tagContent #description").html ("");
-	$j("#tagContent #serialnumber").html ("");
-	$j("#tagContent #currentpatient").html ("");
-	$j("#tagContent #stockstatus").html ("");
-    getOneStockItem (sfid);
+	var stockID = payload.replace (/.*StkId:/, "");
+	
+	resetItemDetailsPage ();
+	
+	$j("#itemDetails h1").html (stockRef);
+	$j("#itemDetails #sfid").html (sfid);
+	$j("#itemDetails #stkidentifier").html (stockID);
+	
+    getOneStockItem (sfid); // get the rest of the details from Salesforce
 }
 
 function writeTag(nfcEvent) 
 {
-	toast.showShort("Writing");
+	toast.showShort("Writing Tag");
   // ignore what's on the tag, just overwrite
 	    
 	var $j = jQuery.noConflict();
 	var mimeType = "text/pg";
-	var payload = "SFId: " + $j("#itemDetails #sfid").html() + " StockID: " + $j("#itemDetails h1").html();
+	var payload = "SFId:" + $j("#itemDetails #sfid").html() + "StkRef:" + $j("#itemDetails h1").html() + "StkId:" + $j("#itemDetails #stkidentifier").html();
 	logToConsole ("NFC: in writeTag payload: " + payload);
 	var record = ndef.mimeMediaRecord(mimeType, nfc.stringToBytes(payload));
 
@@ -84,7 +104,7 @@ function updateSalesforceStatus (sfid, tagStatus)
     	}
    		else
    		{
-   			updateStockItem['Activity_Type__c'] = 'Tag Scanned';
+   			updateStockItem['Activity_Type__c'] = NFCMode.Activity;
    			updateStockItem['Stock_Item__c'] = sfid;
 		   	forcetkClient.create("Stock_Item_Log__c", updateStockItem, function(){toast.showShort("Status saved")},onSaveError);
    		}
@@ -127,7 +147,7 @@ function preparePageChangeItemType ()
     	
  		if ( typeof data.toPage === "string" ) {
 
- 			NFCMode = NFCModeEnum.readMode;
+ 			if (NFCMode === NFCModeEnum.programMode) NFCMode = NFCModeEnum.readMode;
 	    	logToConsole ("NFC: in pagebeforechange resetting write tag");
  			// We are being asked to load a page by URL, but we only
  			// want to handle URLs that request the data for a specific
@@ -190,43 +210,6 @@ function showItemInstances (urlObj, options)
 	logToConsole ("showItemInstances NFC: Type: " + typeName + " subType: " + subTypeName);
 
 	getListOfItems (typeName, subTypeName);
-//	var	pageSelector = urlObj.hash.replace( /\?.*$/, "" );
-//	
-//	// Get the page we are going to dump our content into.
-//	var $page = $j( pageSelector );
-//
-//	// Get the header for the page.
-//	var	$header = $page.children( ":jqmData(role=header)" );
-//
-//	// Get the content area element for the page.
-//	var	$content = $page.children( ":jqmData(role=content)" );
-//
-//	var i=0;
-//	var markup = '<h1>' + categoryName + '</h1>';
-//		
-//	$content.html( markup );
-//		
-//	// Pages are lazily enhanced. We call page() on the page
-//	// element to make sure it is always enhanced before we
-//	// attempt to enhance the listview markup we just injected.
-//	// Subsequent calls to page() are ignored since a page/widget
-//	// can only be enhanced once.
-//	$page.page();
-//
-//   	// We don't want the data-url of the page we just modified
-//	// to be the url that shows up in the browser's location field,
-//	// so set the dataUrl option to the URL for the category
-//	// we just loaded.
-//	options.dataUrl = urlObj.href;
-//
-//	$j("#itemInstances h1").html (categoryName);
-//	
-//	// Now call changePage() and tell it to switch to
-//	// the page we just modified.
-//	$j.mobile.changePage( $page, options );
-	
-
-//	$j.mobile.changePage("#stockItem");
 }
 
 function showItemDetails (urlObj, options)
@@ -242,46 +225,19 @@ function showItemDetails (urlObj, options)
 	{
 		if (currentItems[i].Id == itemID)
 		{
-			$j("#itemDetails h1").html (currentItems[i].Stock_Item_Identifier__c);
+			$j("#itemDetails h1").html (currentItems[i].Name);
+			$j("#itemDetails #stkidentifier").html (currentItems[i].Stock_Item_Identifier__c);
 			$j("#itemDetails #sfid").html (currentItems[i].Id);
 			$j("#itemDetails #serialnumber").html (currentItems[i].Product_Serial_Number__c);
 			$j("#itemDetails #description").html (currentItems[i].Current_description__c);
 			$j("#itemDetails #currentpatient").html (currentItems[i].Current_Patient__c);
 			$j("#itemDetails #stockstatus").html (currentItems[i].Status__c);
 			
-			$j("#itemDetails #status").html("Tap an NFC tag to write data.");
 			NFCMode = NFCModeEnum.programMode;
+			$j("#itemDetails #status").html(NFCMode.Hint);
 			break;
 		}
 	}
-	
-
-	//var	pageSelector = urlObj.hash.replace( /\?.*$/, "" );
-	
-	// Get the page we are going to dump our content into.
-	//var $page = $j( pageSelector );
-
-		
-	// Pages are lazily enhanced. We call page() on the page
-	// element to make sure it is always enhanced before we
-	// attempt to enhance the listview markup we just injected.
-	// Subsequent calls to page() are ignored since a page/widget
-	// can only be enhanced once.
-	//$page.page();
-
-   	// We don't want the data-url of the page we just modified
-	// to be the url that shows up in the browser's location field,
-	// so set the dataUrl option to the URL for the category
-	// we just loaded.
-	//options.dataUrl = urlObj.href;
-
-	
-	// Now call changePage() and tell it to switch to
-	// the page we just modified.
-//	$j.mobile.changePage( $page, options );
-	
-
-//	$j.mobile.changePage("#stockItem");
 }
 
 function onSuccessOneStockItem (response)
@@ -292,10 +248,10 @@ function onSuccessOneStockItem (response)
     if (response.totalSize > 0)
     {
     	var stockItem = response.records[0];
-    	$j("#tagContent #description").html (stockItem.Current_description__c);
-    	$j("#tagContent #serialnumber").html (stockItem.Product_Serial_Number__c);
-		$j("#tagContent #currentpatient").html (stockItem.Current_Patient__c);
-		$j("#tagContent #stockstatus").html (stockItem.Status__c);
+    	$j("#itemDetails #description").html (stockItem.Current_description__c);
+    	$j("#itemDetails #serialnumber").html (stockItem.Product_Serial_Number__c);
+		$j("#itemDetails #currentpatient").html (stockItem.Current_Patient__c);
+		$j("#itemDetails #stockstatus").html (stockItem.Status__c);
     	
     	updateSalesforceStatus (stockItem.Id, false);
     }

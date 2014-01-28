@@ -12,11 +12,19 @@ function regLinkClickHandlers() {
     $j('#link_stockcheck').click(function() {
                                          logToConsole("link_stockcheck clicked");
                                          NFCMode = NFCModeEnum.stockCheckMode; 
+                                         resetItemDetailsPage();
                                          });
     
     $j('#link_delivery').click(function() {
                                          logToConsole("link_delivery clicked");
                                          NFCMode = NFCModeEnum.deliveryMode; 
+                                         resetItemDetailsPage();
+                                         });
+    
+    $j('#link_collection').click(function() {
+                                         logToConsole("link_collection clicked");
+                                         NFCMode = NFCModeEnum.collectionMode; 
+                                         resetItemDetailsPage();
                                          });
     
     $j('#link_reset').click(function() {

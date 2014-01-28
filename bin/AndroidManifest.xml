@@ -12,7 +12,7 @@
     <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:manageSpaceActivity="com.salesforce.androidsdk.ui.ManageSpaceActivity" android:name="com.imnda.stock.StockApp">
         
         <!--  Main activity -->
-        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name="com.salesforce.androidsdk.ui.sfhybrid.SalesforceDroidGapActivity">
+        <activity android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" android:name="com.salesforce.androidsdk.ui.sfhybrid.SalesforceDroidGapActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
