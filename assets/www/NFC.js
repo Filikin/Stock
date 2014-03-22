@@ -117,12 +117,12 @@ function updateSalesforceStatus (sfid, tagStatus)
 
 function getListOfItems (eqType, eqsubType)
 {
-    forcetkClient.query("SELECT Id, Current_Patient__c, Status__c, Current_description__c, Tag_status__c, Name, Stock_Item_Identifier__c, Equipment_Sub_Category__c, Equipment_Type__r.Equipment_Type__c, Product_Serial_Number__c FROM Stock_Item__c where Equipment_Type__r.Equipment_Type__c = '" + eqType + "' and Equipment_Sub_Category__c = '" + eqsubType + "' and Tag_status__c = 'Not programmed' order by Stock_Item_Identifier__c", onSuccessStockItemInstances, onErrorStockItems); 
+    forcetkClient.query("SELECT Id, Current_Patient__c, Status__c, Current_description__c, Tag_status__c, Name, Stock_Item_Identifier__c, Equipment_Sub_Category__c, Equipment_Type__r.Equipment_Type__c, Product_Serial_Number__c FROM Stock_Item__c where Equipment_Type__r.Equipment_Type__c = '" + eqType + "' and Equipment_Sub_Category__c = '" + eqsubType + "' and Tag_status__c = 'Not programmed' order by Name", onSuccessStockItemInstances, onErrorStockItems); 
 }
 
 function getListOfItemTypes ()
 {
-    forcetkClient.query("SELECT Equipment_Type__r.Equipment_Type__c, Equipment_Sub_Category__c FROM Stock_Item__c where Tag_status__c = 'Not programmed' order by Equipment_Type__r.Equipment_Type__c", onSuccessStockItemTypes, onErrorStockItems); 
+    forcetkClient.query("SELECT Equipment_Type__r.Equipment_Type__c, Equipment_Sub_Category__c FROM Stock_Item__c where Tag_status__c = 'Not programmed' order by Type_of_Equipment__c, Equipment_Sub_Category__c", onSuccessStockItemTypes, onErrorStockItems); 
 }
 
 function getOneStockItem (sfid)
