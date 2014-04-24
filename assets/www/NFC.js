@@ -243,7 +243,7 @@ function showItemDetails (urlObj, options)
 function onSuccessOneStockItem (response)
 {
     var $j = jQuery.noConflict();
-    logToConsole("onSuccessStockItemTypes: received " + response.totalSize + " items");
+    logToConsole("onSuccessOneStockItem: received " + response.totalSize + " items");
 
     if (response.totalSize > 0)
     {
@@ -274,7 +274,7 @@ function onSuccessStockItemTypes(response)
 	    var subcategoryMap = {};
 	    $j.each(response.records, function(i, stockItem) {
 	    	equipmentTypeMap [stockItem.Equipment_Type__r.Equipment_Type__c] = stockItem.Equipment_Type__r.Equipment_Type__c;
-	    	subcategoryMap [stockItem.Equipment_Sub_Category__c] = stockItem.Equipment_Type__r.Equipment_Type__c;
+	    	subcategoryMap [stockItem.Equipment_Type__r.Equipment_Type__c + stockItem.Equipment_Sub_Category__c] = stockItem.Equipment_Type__r.Equipment_Type__c;
 	    	});
 	    
 	    var count=1;
@@ -284,7 +284,11 @@ function onSuccessStockItemTypes(response)
 	   		newLi += "<ul data-role='listview'>"
 	   		for (var sube in subcategoryMap)
 	    	{
-	    		if (subcategoryMap[sube] == e) newLi += "<li><a href='#itemInstances?type="+e+"&sub="+sube+"'>" + sube + "</a></li>";
+	    		if (subcategoryMap[sube] == e) 
+	    		{
+	    			var subCategory = sube.replace (e, "");
+	    			newLi += "<li><a href='#itemInstances?type="+e+"&sub="+subCategory+"'>" + subCategory + "</a></li>";
+	    		}
 	    	}
 	   		newLi += "</ul>";
 	    	ul.append(newLi);
